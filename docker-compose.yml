@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  django:
+    container_name: django
+    build:
+      context: ./
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./:/usr/src/app/
+    ports: 
+      # - 8001:8000
+      - 8000:8000
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=django-insecure-=e=b=u+1hguv^&r+8yrs5a(^t1_vi+vs#opxt&=0v_(s^ecq#g
+      - ALLOWED_HOSTS=localhost, 127.0.0.1
+    depends_on:
+      - db
+
+  db:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: test_db
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+    ports:
+      # - "5432:5432"
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

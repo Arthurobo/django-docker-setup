@@ -2,15 +2,14 @@ version: '3.8'
 
 services:
   dcelery:
-    container_name: dcelery-dev
+    container_name: dcelery
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn dcelery.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - ./:/home/app/dcelery
       - static_volume:/home/app/dcelery/static_in_env
-    ports: 
+    expose: 
       - 8000:8000
     env_file:
       - ./.env.prod
@@ -23,6 +22,15 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.prod
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/dcelery/static_in_env
+    ports:
+      - 1337:80
+    depends_on:
+      - dcelery
 
 volumes:
   postgres_data:

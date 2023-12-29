@@ -5,7 +5,6 @@ services:
     container_name: dcelery-dev
     build:
       context: ./
-      dockerfile: Dockerfile.prod
     # command: python manage.py runserver 0.0.0.0:8000
     command: python manage.py runserver 0.0.0.0:8000 & celery -A dcelery worker --loglevel=info -B
     # command: celery -A dcelery worker --loglevel=info -B

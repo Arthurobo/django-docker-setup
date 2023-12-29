@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   dcelery:
-    container_name: dcelery
+    container_name: dcelery-prod
     build:
       context: ./
-      dockerfile: Dockerfile.prod
-    command: gunicorn dcelery.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn dcelery.wsgi:application --bind 0.0.0.0:8000 & celery -A dcelery worker --loglevel=info -B
     volumes:
+      - ./:/home/app/dcelery
       - static_volume:/home/app/dcelery/static_in_env
     expose: 
       - 8000:8000
@@ -15,6 +15,7 @@ services:
       - ./.env.prod
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:15
@@ -31,6 +32,11 @@ services:
       - 1337:80
     depends_on:
       - dcelery
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
 
 volumes:
   postgres_data:

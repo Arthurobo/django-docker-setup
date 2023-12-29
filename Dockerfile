@@ -1,4 +1,4 @@
-FROM python:3.11.4-alpine
+FROM python:3.8-alpine
 WORKDIR /usr/src/app
 
 ENV PYTHONUNBUFFERED 1
@@ -13,3 +13,4 @@ COPY . /usr/src/app
 
 ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
 
+# CMD [ "--access-logfile" ]
